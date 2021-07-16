@@ -152,16 +152,26 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             .show()
     }
 
-    private val cameraActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        when (result.resultCode) {
-            Activity.RESULT_OK -> {
-                if (result.data != null) {
-                    val thumbnail: Bitmap? = result.data?.extras?.get(DATA_KEY) as? Bitmap
-                    mBinding.ivDishImage.setImageBitmap(thumbnail)
+    private val cameraActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    if (result.data != null) {
+                        val thumbnail: Bitmap? = result.data?.extras?.get(DATA_KEY) as? Bitmap
+                        mBinding.run {
+                            ivDishImage.setImageBitmap(thumbnail)
+                            ivAddDishImage.setImageDrawable(
+                                AppCompatResources.getDrawable(
+                                    this@AddUpdateDishActivity,
+                                    R.drawable.ic_edit
+                                )
+                            )
+                        }
+
+                    }
+                }
+                Activity.RESULT_CANCELED -> {
                 }
             }
-            Activity.RESULT_CANCELED -> {
-            }
         }
-    }
 }
