@@ -11,4 +11,8 @@
     <color name="secondaryDarkColor">#519657</color>
     <color name="primaryTextColor">#004d40</color>
     <color name="secondaryTextColor">#ffd180</color>
+
+    <color name="dish_image_background">#e1e1e1</color>
+    <color name="blue_grey_700">#37474f</color>
+    <color name="grey_900">#212121</color>
 </resources>
