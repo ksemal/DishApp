@@ -1,18 +1,16 @@
-package com.example.dishapp
+package com.example.dishapp.view.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.View
-import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.example.dishapp.R
 import com.example.dishapp.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

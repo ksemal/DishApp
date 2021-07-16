@@ -1,4 +1,4 @@
-package com.example.dishapp.ui.dashboard
+package com.example.dishapp.view.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.dishapp.R
+import com.example.dishapp.viewmodel.DashboardViewModel
 
 class DashboardFragment : Fragment() {
 
