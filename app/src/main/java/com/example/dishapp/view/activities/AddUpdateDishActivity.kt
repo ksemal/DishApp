@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -103,11 +104,12 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 )
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                        Toast.makeText(
-                            this@AddUpdateDishActivity,
-                            "You have gallery permission",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        galleryActivity.launch(
+                            Intent(
+                                Intent.ACTION_PICK,
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                            )
+                        )
                     }
 
                     override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
@@ -156,8 +158,8 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
-                    if (result.data != null) {
-                        val thumbnail: Bitmap? = result.data?.extras?.get(DATA_KEY) as? Bitmap
+                    result.data?.let {
+                        val thumbnail: Bitmap? = it.extras?.get(DATA_KEY) as? Bitmap
                         mBinding.run {
                             ivDishImage.setImageBitmap(thumbnail)
                             ivAddDishImage.setImageDrawable(
@@ -167,10 +169,33 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                                 )
                             )
                         }
-
                     }
                 }
                 Activity.RESULT_CANCELED -> {
+                    Log.e("cancelled", "User cancelled camera capture")
+                }
+            }
+        }
+
+    private val galleryActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    result.data?.let {
+                        val selectedPhotoUri = it.data
+                        mBinding.run {
+                            ivDishImage.setImageURI(selectedPhotoUri)
+                            ivAddDishImage.setImageDrawable(
+                                AppCompatResources.getDrawable(
+                                    this@AddUpdateDishActivity,
+                                    R.drawable.ic_edit
+                                )
+                            )
+                        }
+                    }
+                }
+                Activity.RESULT_CANCELED -> {
+                    Log.e("cancelled", "User cancelled image selection")
                 }
             }
         }
