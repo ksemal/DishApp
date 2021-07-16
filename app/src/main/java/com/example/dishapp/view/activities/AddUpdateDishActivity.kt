@@ -1,25 +1,33 @@
 package com.example.dishapp.view.activities
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import com.example.dishapp.DATA_KEY
 import com.example.dishapp.R
 import com.example.dishapp.databinding.ActivityAddUpdateDishBinding
 import com.example.dishapp.databinding.DialogCustomImageSelectionBinding
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 
 class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mBinding: ActivityAddUpdateDishBinding
@@ -63,19 +71,16 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
             Dexter.withContext(this)
                 .withPermissions(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA
                 )
                 .withListener(object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        if (report != null && report.areAllPermissionsGranted()) {
-                            Toast.makeText(
-                                this@AddUpdateDishActivity,
-                                "You have camera permission",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            showRationalDialogForPermissions()
+                        report?.let {
+                            if (it.areAllPermissionsGranted()) {
+                                cameraActivity.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+                            } else {
+                                showRationalDialogForPermissions()
+                            }
                         }
                     }
 
@@ -93,26 +98,29 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         }
         binding.tvGallery.setOnClickListener {
             Dexter.withContext(this)
-                .withPermissions(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                .withPermission(
+                    Manifest.permission.READ_EXTERNAL_STORAGE
                 )
-                .withListener(object : MultiplePermissionsListener {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        if (report != null && report.areAllPermissionsGranted()) {
-                            Toast.makeText(
-                                this@AddUpdateDishActivity,
-                                "You have gallery permission",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            showRationalDialogForPermissions()
-                        }
+                .withListener(object : PermissionListener {
+                    override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            "You have gallery permission",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                        Toast.makeText(
+                            this@AddUpdateDishActivity,
+                            "You denied gallery permission",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
-                        permissions: MutableList<PermissionRequest>?,
-                        token: PermissionToken?
+                        p0: PermissionRequest?,
+                        p1: PermissionToken?
                     ) {
                         showRationalDialogForPermissions()
                     }
@@ -142,5 +150,18 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    private val cameraActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                if (result.data != null) {
+                    val thumbnail: Bitmap? = result.data?.extras?.get(DATA_KEY) as? Bitmap
+                    mBinding.ivDishImage.setImageBitmap(thumbnail)
+                }
+            }
+            Activity.RESULT_CANCELED -> {
+            }
+        }
     }
 }
