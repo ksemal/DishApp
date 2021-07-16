@@ -15,4 +15,7 @@
     <string name="title_select_image_action">Select Image Action</string>
     <string name="lbl_camera">Camera</string>
     <string name="lbl_gallery">Gallery</string>
+    <string name="add_image_dialog_no_permission">It looks like you have turned off permission required for this feature. It can be enabled under the Applications Settings</string>
+    <string name="add_image_dialog_positive_btn">GO TO SETTINGS</string>
+    <string name="add_image_dialog_negative_btn">CANCEL</string>
 </resources>
