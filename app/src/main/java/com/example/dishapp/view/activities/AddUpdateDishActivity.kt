@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import com.bumptech.glide.Glide
 import com.example.dishapp.DATA_KEY
 import com.example.dishapp.R
 import com.example.dishapp.databinding.ActivityAddUpdateDishBinding
@@ -160,15 +161,16 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 Activity.RESULT_OK -> {
                     result.data?.let {
                         val thumbnail: Bitmap? = it.extras?.get(DATA_KEY) as? Bitmap
-                        mBinding.run {
-                            ivDishImage.setImageBitmap(thumbnail)
-                            ivAddDishImage.setImageDrawable(
-                                AppCompatResources.getDrawable(
-                                    this@AddUpdateDishActivity,
-                                    R.drawable.ic_edit
-                                )
+                        Glide.with(this)
+                            .load(thumbnail)
+                            .centerCrop()
+                            .into(mBinding.ivDishImage)
+                        mBinding.ivAddDishImage.setImageDrawable(
+                            AppCompatResources.getDrawable(
+                                this@AddUpdateDishActivity,
+                                R.drawable.ic_edit
                             )
-                        }
+                        )
                     }
                 }
                 Activity.RESULT_CANCELED -> {
@@ -183,15 +185,17 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                 Activity.RESULT_OK -> {
                     result.data?.let {
                         val selectedPhotoUri = it.data
-                        mBinding.run {
-                            ivDishImage.setImageURI(selectedPhotoUri)
-                            ivAddDishImage.setImageDrawable(
-                                AppCompatResources.getDrawable(
-                                    this@AddUpdateDishActivity,
-                                    R.drawable.ic_edit
-                                )
+                        Glide.with(this)
+                            .load(selectedPhotoUri)
+                            .centerCrop()
+                            .into(mBinding.ivDishImage)
+                        mBinding.ivAddDishImage.setImageDrawable(
+                            AppCompatResources.getDrawable(
+                                this@AddUpdateDishActivity,
+                                R.drawable.ic_edit
                             )
-                        }
+                        )
+
                     }
                 }
                 Activity.RESULT_CANCELED -> {
