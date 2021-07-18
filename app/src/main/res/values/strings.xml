@@ -18,4 +18,50 @@
     <string name="add_image_dialog_no_permission">It looks like you have turned off permission required for this feature. It can be enabled under the Applications Settings</string>
     <string name="add_image_dialog_positive_btn">GO TO SETTINGS</string>
     <string name="add_image_dialog_negative_btn">CANCEL</string>
+
+    <string-array name="dishTypes">
+        <item>Breakfast</item>
+        <item>Lunch</item>
+        <item>Snacks</item>
+        <item>Dinner</item>
+        <item>Salad</item>
+        <item>Side dish</item>
+        <item>Dessert</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="dishCategories">
+        <item>Pizza</item>
+        <item>BBQ</item>
+        <item>Bakery</item>
+        <item>Burger</item>
+        <item>Cafe</item>
+        <item>Chicken</item>
+        <item>Dessert</item>
+        <item>Drinks</item>
+        <item>Hot dogs</item>
+        <item>Juices</item>
+        <item>Sandwich</item>
+        <item>Tea &amp; Coffee</item>
+        <item>Wraps</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="dishCookingTime">
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>45</item>
+        <item>50</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>150</item>
+        <item>180</item>
+    </string-array>
+
+    <string name="title_select_dish_type">SELECT DISH TYPE</string>
+    <string name="title_select_dish_category">SELECT DISH CATEGORY</string>
+    <string name="title_select_dish_cooking_time">SELECT DISH COOKING TIME</string>
 </resources>
