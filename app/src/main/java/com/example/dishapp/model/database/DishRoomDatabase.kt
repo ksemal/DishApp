@@ -9,6 +9,8 @@ import com.example.dishapp.model.entities.Dish
 @Database(entities = [Dish::class], version = 1)
 abstract class DishRoomDatabase: RoomDatabase() {
 
+    abstract fun dishDao(): DishDao
+
     companion object {
 
         @Volatile
