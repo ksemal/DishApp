@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
@@ -30,11 +31,15 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.dishapp.R
+import com.example.dishapp.application.DishApplication
 import com.example.dishapp.databinding.ActivityAddUpdateDishBinding
 import com.example.dishapp.databinding.DialogCustomImageSelectionBinding
 import com.example.dishapp.databinding.DialogCustomListBinding
+import com.example.dishapp.model.entities.Dish
 import com.example.dishapp.utils.*
 import com.example.dishapp.view.adapters.CustomListItemAdapter
+import com.example.dishapp.viewmodel.DishViewModel
+import com.example.dishapp.viewmodel.DishViewModelFactory
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -53,6 +58,9 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mBinding: ActivityAddUpdateDishBinding
     private var mImagePath: String = ""
     private lateinit var mCustomListDialog: Dialog
+    private val mDishViewModel: DishViewModel by viewModels {
+        DishViewModelFactory((application as DishApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,11 +175,25 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                         ).show()
                     }
                     else -> {
+                        val dishDetails: Dish = Dish(
+                            image = mImagePath,
+                            imageSource = DISH_IMAGE_SOURCE_LOCAL,
+                            title = title,
+                            type = type,
+                            category = category,
+                            ingredients = ingredients,
+                            cookingTime = cookingTime,
+                            directionsToCook = directions,
+                            favoriteDish = false
+                        )
+                        mDishViewModel.insert(dishDetails)
                         Toast.makeText(
-                            this@AddUpdateDishActivity,
-                            "All the entries are valid.",
+                            this,
+                            "You successfully added your favorite dish details",
                             Toast.LENGTH_SHORT
                         ).show()
+                        Log.i("Insertion", "Success")
+                        finish()
                     }
                 }
             }

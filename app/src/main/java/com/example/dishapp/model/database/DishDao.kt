@@ -7,5 +7,5 @@ import com.example.dishapp.model.entities.Dish
 @Dao
 interface DishDao {
     @Insert
-    suspend fun insertDishDetails(dish: Dish)
+    suspend fun insertDishDetails(dish: Dish) {}
 }
