@@ -1,8 +1,6 @@
 package com.example.dishapp.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.dishapp.model.database.DishRepository
 import com.example.dishapp.model.entities.Dish
 import kotlinx.coroutines.launch
@@ -13,6 +11,8 @@ class DishViewModel(private val repository: DishRepository): ViewModel() {
     fun insert(dish: Dish) = viewModelScope.launch {
         repository.insertDishData(dish)
     }
+
+    val allDishesList: LiveData<List<Dish>> = repository.allDishesList.asLiveData()
 }
 
 class DishViewModelFactory(private val repository: DishRepository): ViewModelProvider.Factory {

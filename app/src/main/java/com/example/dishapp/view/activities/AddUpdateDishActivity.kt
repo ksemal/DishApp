@@ -192,7 +192,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                             "You successfully added your favorite dish details",
                             Toast.LENGTH_SHORT
                         ).show()
-                        Log.i("Insertion", "Success")
+                        Log.i("Insertion", "Success ${mDishViewModel.allDishesList.value?.size}")
                         finish()
                     }
                 }
