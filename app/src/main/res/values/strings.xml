@@ -3,6 +3,7 @@
     <string name="title_all_dishes">All Dishes</string>
     <string name="title_favorite_dish">Favorite Dish</string>
     <string name="title_random_dish">Random Dish</string>
+    <string name="title_dish_details">Dish Details</string>
     <string name="add_dish">Add dish</string>
     <string name="image_contentDescription">image</string>
     <string name="lbl_title">Title</string>
