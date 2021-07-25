@@ -33,7 +33,7 @@ class DishAdapter(private val fragment: Fragment) :
         holder.tvTitle.text = dish.title
         holder.itemView.setOnClickListener {
             if (fragment is AllDishesFragment) {
-                fragment.showDishDetails()
+                fragment.showDishDetails(dishes[position])
             }
         }
     }

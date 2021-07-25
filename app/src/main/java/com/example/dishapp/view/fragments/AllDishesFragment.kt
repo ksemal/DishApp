@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.dishapp.R
 import com.example.dishapp.application.DishApplication
 import com.example.dishapp.databinding.FragmentAllDishesBinding
+import com.example.dishapp.model.entities.Dish
 import com.example.dishapp.view.activities.AddUpdateDishActivity
 import com.example.dishapp.view.activities.MainActivity
 import com.example.dishapp.view.adapters.DishAdapter
@@ -20,7 +22,7 @@ class AllDishesFragment : Fragment() {
 
     private lateinit var mBinding: FragmentAllDishesBinding
 
-    private val mDishViewModel: DishViewModel by viewModels {
+    private val mDishViewModel: DishViewModel by activityViewModels {
         DishViewModelFactory((requireActivity().application as DishApplication).repository)
     }
 
@@ -75,9 +77,10 @@ class AllDishesFragment : Fragment() {
         return mBinding.root
     }
 
-    fun showDishDetails() {
+    fun showDishDetails(dish: Dish) {
         findNavController().navigate(R.id.action_navigation_all_dishes_to_navigation_dish_details)
         (activity as? MainActivity)?.hideBottomNavigationView()
+        mDishViewModel.setSelectedDish(dish)
     }
 
     override fun onResume() {
