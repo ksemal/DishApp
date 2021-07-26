@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.example.dishapp.databinding.ItemDishLayoutBinding
 import com.example.dishapp.model.entities.Dish
 import com.example.dishapp.view.fragments.AllDishesFragment
+import com.example.dishapp.view.fragments.FavoriteDishesFragment
 
 class DishAdapter(private val fragment: Fragment) :
     RecyclerView.Adapter<DishAdapter.ViewHolder>() {
@@ -32,8 +33,9 @@ class DishAdapter(private val fragment: Fragment) :
             .into(holder.ivDishImage)
         holder.tvTitle.text = dish.title
         holder.itemView.setOnClickListener {
-            if (fragment is AllDishesFragment) {
-                fragment.showDishDetails(dishes[position])
+            when (fragment) {
+                is AllDishesFragment -> fragment.showDishDetails(dishes[position])
+                is FavoriteDishesFragment -> fragment.showDishDetails(dishes[position])
             }
         }
     }

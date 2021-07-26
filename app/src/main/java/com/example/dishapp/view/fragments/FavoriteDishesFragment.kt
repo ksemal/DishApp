@@ -5,17 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.dishapp.R
 import com.example.dishapp.application.DishApplication
 import com.example.dishapp.databinding.FragmentFavoriteDishesBinding
+import com.example.dishapp.model.entities.Dish
+import com.example.dishapp.view.activities.MainActivity
 import com.example.dishapp.view.adapters.DishAdapter
 import com.example.dishapp.viewmodel.DishViewModel
 import com.example.dishapp.viewmodel.DishViewModelFactory
 
 class FavoriteDishesFragment : Fragment() {
 
-    private val mFavoriteDishViewModel: DishViewModel by viewModels {
+    private val mFavoriteDishViewModel: DishViewModel by activityViewModels {
         DishViewModelFactory((requireActivity().application as DishApplication).repository)
     }
 
@@ -56,5 +60,16 @@ class FavoriteDishesFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         mBinding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.showBottomNavigationView()
+    }
+
+    fun showDishDetails(dish: Dish) {
+        findNavController().navigate(R.id.action_navigation_favorite_dishes_to_navigation_dish_details)
+        (activity as? MainActivity)?.hideBottomNavigationView()
+        mFavoriteDishViewModel.setSelectedDish(dish)
     }
 }
