@@ -62,11 +62,40 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         DishViewModelFactory((application as DishApplication).repository)
     }
 
+    private var mDishDetails: Dish? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityAddUpdateDishBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
+        if (intent.hasExtra(EXTRA_DISH_DETAILS)) {
+            mDishDetails = intent.getParcelableExtra(EXTRA_DISH_DETAILS)
+        }
+
         setUpActionBar()
+
+        //populate with data from edit action
+        mDishDetails?.let {
+            if (it.id != 0) {
+                mImagePath = it.image
+
+                // Load the dish image in the ImageView.
+                Glide.with(this@AddUpdateDishActivity)
+                    .load(mImagePath)
+                    .centerCrop()
+                    .into(mBinding.ivDishImage)
+
+                mBinding.etTitle.setText(it.title)
+                mBinding.etType.setText(it.type)
+                mBinding.etCategory.setText(it.category)
+                mBinding.etIngredients.setText(it.ingredients)
+                mBinding.etCookingTime.setText(it.cookingTime)
+                mBinding.etDirectionToCook.setText(it.directionsToCook)
+
+                mBinding.btnAddDish.text = resources.getString(R.string.lbl_update_dish)
+            }
+        }
         mBinding.run {
             ivAddDishImage.setOnClickListener(this@AddUpdateDishActivity)
             etType.setOnClickListener(this@AddUpdateDishActivity)
@@ -78,6 +107,11 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setUpActionBar() {
         setSupportActionBar(mBinding.updateAddDishToolbar)
+        supportActionBar?.title = if (mDishDetails != null && mDishDetails?.id != 0) {
+            getString(R.string.title_edit_dish)
+        } else {
+            getString(R.string.title_add_dish)
+        }
         supportActionBar?.setHomeButtonEnabled(true)
         mBinding.updateAddDishToolbar.setNavigationOnClickListener {
             onBackPressed()
@@ -175,24 +209,51 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                         ).show()
                     }
                     else -> {
+
+                        var dishID = 0
+                        var imageSource = DISH_IMAGE_SOURCE_LOCAL
+                        var favoriteDish = false
+
+                        mDishDetails?.let {
+                            if (it.id != 0) {
+                                dishID = it.id
+                                imageSource = it.imageSource
+                                favoriteDish = it.favoriteDish
+                            }
+                        }
                         val dishDetails: Dish = Dish(
                             image = mImagePath,
-                            imageSource = DISH_IMAGE_SOURCE_LOCAL,
+                            imageSource = imageSource,
                             title = title,
                             type = type,
                             category = category,
                             ingredients = ingredients,
                             cookingTime = cookingTime,
                             directionsToCook = directions,
-                            favoriteDish = false
+                            favoriteDish = favoriteDish,
+                            id = dishID
                         )
-                        mDishViewModel.insert(dishDetails)
-                        Toast.makeText(
-                            this,
-                            "You successfully added your favorite dish details",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.i("Insertion", "Success ${mDishViewModel.allDishesList.value?.size}")
+
+                        // insert new entry
+                        if (dishID == 0) {
+                            mDishViewModel.insert(dishDetails)
+
+                            Toast.makeText(
+                                this@AddUpdateDishActivity,
+                                "You successfully added your favorite dish details.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.e("Insertion", "Success")
+                        } else {
+                            // update existing entry
+                            mDishViewModel.update(dishDetails)
+                            Toast.makeText(
+                                this@AddUpdateDishActivity,
+                                "You successfully updated your favorite dish details.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.e("Updating", "Success")
+                        }
                         finish()
                     }
                 }

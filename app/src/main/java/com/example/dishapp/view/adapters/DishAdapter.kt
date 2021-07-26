@@ -1,5 +1,6 @@
 package com.example.dishapp.view.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.example.dishapp.R
 import com.example.dishapp.databinding.ItemDishLayoutBinding
 import com.example.dishapp.model.entities.Dish
+import com.example.dishapp.utils.EXTRA_DISH_DETAILS
+import com.example.dishapp.view.activities.AddUpdateDishActivity
 import com.example.dishapp.view.fragments.AllDishesFragment
 import com.example.dishapp.view.fragments.FavoriteDishesFragment
 
@@ -48,7 +51,11 @@ class DishAdapter(private val fragment: Fragment) :
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.action_delete_dish -> println("delete ${dish.title}")
-                    R.id.action_edit_dish -> println("edit ${dish.title}")
+                    R.id.action_edit_dish -> {
+                        val intent = Intent(fragment.requireActivity(), AddUpdateDishActivity::class.java)
+                        intent.putExtra(EXTRA_DISH_DETAILS, dish)
+                        fragment.activity?.startActivity(intent)
+                    }
                 }
                 true
             }
