@@ -17,6 +17,8 @@ class DishViewModel(private val repository: DishRepository) : ViewModel() {
         repository.updateDishData(dish)
     }
 
+    val favoriteDishesList: LiveData<List<Dish>> = repository.favoriteDishesList.asLiveData()
+
     private val selectedDish: MutableLiveData<Dish> = MutableLiveData<Dish>()
 
     fun setSelectedDish(dish: Dish) {

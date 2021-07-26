@@ -25,7 +25,7 @@ import java.util.*
 
 class DishDetailsFragment : Fragment() {
 
-    private val viewModel: DishViewModel by activityViewModels {
+    private val dishDetailsViewModel: DishViewModel by activityViewModels {
         DishViewModelFactory((requireActivity().application as DishApplication).repository)
     }
     private var mBinding: FragmentDishDetailsBinding? = null
@@ -41,7 +41,7 @@ class DishDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getSelectedDish()?.let { dish ->
+        dishDetailsViewModel.getSelectedDish()?.let { dish ->
             mBinding?.let { binding ->
                 Glide.with(requireActivity())
                     .load(dish.image)
@@ -85,14 +85,14 @@ class DishDetailsFragment : Fragment() {
                 binding.tvCookingTime.text =
                     resources.getString(R.string.lbl_estimate_cooking_time, dish.cookingTime)
                 binding.ivFavoriteDish.setImageResource(
-                    setFavoriteDishIcon((viewModel.getSelectedDish() as Dish).favoriteDish)
+                    setFavoriteDishIcon((dishDetailsViewModel.getSelectedDish() as Dish).favoriteDish)
                 )
                 binding.ivFavoriteDish.setOnClickListener {
-                    (viewModel.getSelectedDish() as Dish).favoriteDish =
-                        !(viewModel.getSelectedDish() as Dish).favoriteDish
-                    viewModel.update(viewModel.getSelectedDish() as Dish)
+                    (dishDetailsViewModel.getSelectedDish() as Dish).favoriteDish =
+                        !(dishDetailsViewModel.getSelectedDish() as Dish).favoriteDish
+                    dishDetailsViewModel.update(dishDetailsViewModel.getSelectedDish() as Dish)
                     binding.ivFavoriteDish.setImageResource(
-                        setFavoriteDishIcon((viewModel.getSelectedDish() as Dish).favoriteDish)
+                        setFavoriteDishIcon((dishDetailsViewModel.getSelectedDish() as Dish).favoriteDish)
                     )
                 }
             }
