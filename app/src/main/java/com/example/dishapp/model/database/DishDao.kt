@@ -11,4 +11,7 @@ interface DishDao {
 
     @Query("SELECT * FROM DISHES_TABLE ORDER BY ID")
     fun getAllDishesList(): Flow<List<Dish>>
+
+    @Update
+    suspend fun updateDishDetails(dish: Dish)
 }

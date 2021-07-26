@@ -16,13 +16,18 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.dishapp.R
+import com.example.dishapp.application.DishApplication
 import com.example.dishapp.databinding.FragmentDishDetailsBinding
+import com.example.dishapp.model.entities.Dish
 import com.example.dishapp.viewmodel.DishViewModel
+import com.example.dishapp.viewmodel.DishViewModelFactory
 import java.util.*
 
 class DishDetailsFragment : Fragment() {
 
-    private val viewModel: DishViewModel by activityViewModels()
+    private val viewModel: DishViewModel by activityViewModels {
+        DishViewModelFactory((requireActivity().application as DishApplication).repository)
+    }
     private var mBinding: FragmentDishDetailsBinding? = null
 
     override fun onCreateView(
@@ -79,8 +84,23 @@ class DishDetailsFragment : Fragment() {
                 binding.tvCookingDirection.text = dish.directionsToCook
                 binding.tvCookingTime.text =
                     resources.getString(R.string.lbl_estimate_cooking_time, dish.cookingTime)
+                binding.ivFavoriteDish.setImageResource(
+                    setFavoriteDishIcon((viewModel.getSelectedDish() as Dish).favoriteDish)
+                )
+                binding.ivFavoriteDish.setOnClickListener {
+                    (viewModel.getSelectedDish() as Dish).favoriteDish =
+                        !(viewModel.getSelectedDish() as Dish).favoriteDish
+                    viewModel.update(viewModel.getSelectedDish() as Dish)
+                    binding.ivFavoriteDish.setImageResource(
+                        setFavoriteDishIcon((viewModel.getSelectedDish() as Dish).favoriteDish)
+                    )
+                }
             }
         }
+    }
+
+    private fun setFavoriteDishIcon(isFavorite: Boolean): Int {
+        return if (isFavorite) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
     }
 
     override fun onDestroy() {
