@@ -1,10 +1,13 @@
 package com.example.dishapp.view.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.dishapp.R
 import com.example.dishapp.databinding.ItemDishLayoutBinding
 import com.example.dishapp.model.entities.Dish
 import com.example.dishapp.view.fragments.AllDishesFragment
@@ -18,6 +21,7 @@ class DishAdapter(private val fragment: Fragment) :
     class ViewHolder(view: ItemDishLayoutBinding) : RecyclerView.ViewHolder(view.root) {
         val ivDishImage = view.ivDishImage
         val tvTitle = view.tvDishTitle
+        val ibMore = view.ibMore
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,6 +41,23 @@ class DishAdapter(private val fragment: Fragment) :
                 is AllDishesFragment -> fragment.showDishDetails(dishes[position])
                 is FavoriteDishesFragment -> fragment.showDishDetails(dishes[position])
             }
+        }
+        holder.ibMore.setOnClickListener {
+            val popup = PopupMenu(fragment.context, holder.ibMore)
+            popup.menuInflater.inflate(R.menu.menu_adapter, popup.menu)
+            popup.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_delete_dish -> println("delete ${dish.title}")
+                    R.id.action_edit_dish -> println("edit ${dish.title}")
+                }
+                true
+            }
+            popup.show()
+        }
+
+        holder.ibMore.visibility = when(fragment) {
+            is AllDishesFragment -> View.VISIBLE
+            else -> View.GONE
         }
     }
 
