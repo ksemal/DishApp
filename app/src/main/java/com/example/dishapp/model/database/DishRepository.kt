@@ -24,4 +24,6 @@ class DishRepository(private val dishDao: DishDao) {
     suspend fun deleteDishData(dish: Dish) {
         dishDao.deleteDishDetails(dish)
     }
+
+    fun filteredListDishes(value: String): Flow<List<Dish>> = dishDao.getFilteredDishesList(value)
 }

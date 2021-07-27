@@ -20,4 +20,7 @@ interface DishDao {
 
     @Delete
     suspend fun deleteDishDetails(dish: Dish)
+
+    @Query("SELECT * FROM DISHES_TABLE WHERE type = :filteredType")
+    fun getFilteredDishesList(filteredType: String): Flow<List<Dish>>
 }

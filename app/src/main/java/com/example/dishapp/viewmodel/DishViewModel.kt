@@ -13,15 +13,18 @@ class DishViewModel(private val repository: DishRepository) : ViewModel() {
 
     val allDishesList: LiveData<List<Dish>> = repository.allDishesList.asLiveData()
 
-    fun update(dish: Dish)  = viewModelScope.launch {
+    fun update(dish: Dish) = viewModelScope.launch {
         repository.updateDishData(dish)
     }
 
     val favoriteDishesList: LiveData<List<Dish>> = repository.favoriteDishesList.asLiveData()
 
-    fun delete(dish: Dish)  = viewModelScope.launch {
+    fun delete(dish: Dish) = viewModelScope.launch {
         repository.deleteDishData(dish)
     }
+
+    fun getFilteredList(value: String): LiveData<List<Dish>> =
+        repository.filteredListDishes(value).asLiveData()
 
     private val selectedDish: MutableLiveData<Dish> = MutableLiveData<Dish>()
 
