@@ -1,5 +1,6 @@
 package com.example.dishapp.model.network
 
+import com.example.dishapp.BuildConfig
 import com.example.dishapp.model.entities.RandomDish
 import com.example.dishapp.utils.BASE_URL
 import com.example.dishapp.utils.LIMIT_LICENSE_VALUE
@@ -18,7 +19,8 @@ class RandomDishApiService {
         .create(RandomDishAPI::class.java)
 
     fun getRandomDish() : Single<RandomDish.Recipes> {
-        return api.getRandomDish("",
+        return api.getRandomDish(
+            BuildConfig.ProjectAPIKey,
             LIMIT_LICENSE_VALUE,
             TAGS_VALUE,
             NUMBER_VALUE)
