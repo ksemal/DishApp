@@ -50,7 +50,7 @@ object RandomDish {
 
     data class ExtendedIngredient(
         val aisle: String,
-        val amount: Int,
+        val amount: Double,
         val consistency: String,
         val id: Int,
         val image: String,
@@ -104,7 +104,7 @@ object RandomDish {
     )
 
     data class Us(
-        val amount: Int,
+        val amount: Double,
         val unitLong: String,
         val unitShort: String
     )

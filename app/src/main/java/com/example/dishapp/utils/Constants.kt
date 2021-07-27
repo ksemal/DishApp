@@ -24,7 +24,7 @@ const val NUMBER: String = "number"
 
 const val BASE_URL: String = "https://api.spoonacular.com/"
 const val LIMIT_LICENSE_VALUE: Boolean = true
-const val TAGS_VALUE: String = "vegetarian, dessert"
+const val TAGS_VALUE: String = "vegetarian,dessert"
 const val NUMBER_VALUE: Int = 1
 
 fun dishTypes(context: Context): ArrayList<String> {
