@@ -14,5 +14,5 @@ interface RandomDishAPI {
         @Query(LIMIT_LICENSE) limitLicense: Boolean,
         @Query(TAGS) tags: String,
         @Query(NUMBER) number: Int,
-    ): Single<RandomDish.Recipe>
+    ): Single<RandomDish.Recipes>
 }
