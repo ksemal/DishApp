@@ -7,16 +7,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.dishapp.R
+import com.example.dishapp.application.DishApplication
 import com.example.dishapp.databinding.FragmentRandomDishBinding
+import com.example.dishapp.model.entities.Dish
 import com.example.dishapp.model.entities.RandomDish
+import com.example.dishapp.utils.DISH_IMAGE_SOURCE_ONLINE
+import com.example.dishapp.viewmodel.DishViewModel
+import com.example.dishapp.viewmodel.DishViewModelFactory
 import com.example.dishapp.viewmodel.RandomDishViewModel
 
 class RandomDishFragment : Fragment() {
     private var mBinding: FragmentRandomDishBinding? = null
+    private var isFavorite: Boolean = false
+    private var isDishAdded: Boolean = false
+    private val mFavoriteDishViewModel: DishViewModel by activityViewModels {
+        DishViewModelFactory((requireActivity().application as DishApplication).repository)
+    }
     private lateinit var mRandomDishViewModel: RandomDishViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,8 +75,13 @@ class RandomDishFragment : Fragment() {
                 .into(binding.ivDishImage)
 
             binding.tvTitle.text = recipe.title
-            binding.tvType.text =
-                if (recipe.dishTypes.isNotEmpty()) recipe.dishTypes[0] else getString(R.string.other)
+
+            // Default Dish Type
+            var dishType: String = getString(R.string.other)
+            if (recipe.dishTypes.isNotEmpty()) {
+                dishType = recipe.dishTypes[0]
+                binding.tvType.text = dishType
+            }
 
             binding.tvCategory.text = getString(R.string.other)
 
@@ -93,7 +110,39 @@ class RandomDishFragment : Fragment() {
                     R.string.lbl_estimate_cooking_time,
                     recipe.readyInMinutes.toString()
                 )
+
+            binding.ivFavoriteDish.setOnClickListener {
+                isFavorite = !isFavorite
+                val randomDishDetails = Dish(
+                    recipe.image,
+                    DISH_IMAGE_SOURCE_ONLINE,
+                    recipe.title,
+                    dishType,
+                    "Other",
+                    ingredients,
+                    recipe.readyInMinutes.toString(),
+                    recipe.instructions,
+                    true
+                )
+                if (isFavorite && !isDishAdded) {
+                    mFavoriteDishViewModel.insert(randomDishDetails)
+                    isDishAdded = true
+                }
+                binding.ivFavoriteDish.setImageResource(
+                    setFavoriteDishIcon(isFavorite)
+                )
+
+                Toast.makeText(
+                    requireActivity(),
+                    resources.getString(R.string.msg_added_to_favorites),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
+    }
+
+    private fun setFavoriteDishIcon(isFavorite: Boolean): Int {
+        return if (isFavorite) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
     }
 
     override fun onDestroy() {
