@@ -1,5 +1,6 @@
 package com.example.dishapp.view.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -71,7 +72,7 @@ class AllDishesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         mBinding = FragmentAllDishesBinding.inflate(inflater, container, false)
         return mBinding.root
     }
@@ -80,6 +81,23 @@ class AllDishesFragment : Fragment() {
         findNavController().navigate(R.id.action_navigation_all_dishes_to_navigation_dish_details)
         (activity as? MainActivity)?.hideBottomNavigationView()
         mDishViewModel.setSelectedDish(dish)
+    }
+
+    fun deleteDish(dish: Dish) {
+        AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.title_delete_dish))
+            .setMessage(getString(R.string.msg_delete_dish_dialog, dish.title))
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .setPositiveButton(getString(R.string.lbl_yes)) { dialogInterface, _ ->
+                mDishViewModel.delete(dish)
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton(getString(R.string.lbl_no)) { dialogInterface, _ ->
+                dialogInterface.dismiss()
+            }
+            .setCancelable(false)
+            .create()
+            .show()
     }
 
     override fun onResume() {

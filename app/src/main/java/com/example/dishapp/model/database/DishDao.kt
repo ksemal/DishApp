@@ -1,9 +1,6 @@
 package com.example.dishapp.model.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.dishapp.model.entities.Dish
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +17,7 @@ interface DishDao {
 
     @Query("SELECT * FROM DISHES_TABLE WHERE favorite_dish = 1")
     fun getAllFavoriteDishesList(): Flow<List<Dish>>
+
+    @Delete
+    suspend fun deleteDishDetails(dish: Dish)
 }

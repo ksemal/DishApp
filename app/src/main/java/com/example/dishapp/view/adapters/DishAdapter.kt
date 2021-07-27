@@ -50,7 +50,11 @@ class DishAdapter(private val fragment: Fragment) :
             popup.menuInflater.inflate(R.menu.menu_adapter, popup.menu)
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.action_delete_dish -> println("delete ${dish.title}")
+                    R.id.action_delete_dish -> {
+                        if (fragment is AllDishesFragment) {
+                            fragment.deleteDish(dish)
+                        }
+                    }
                     R.id.action_edit_dish -> {
                         val intent = Intent(fragment.requireActivity(), AddUpdateDishActivity::class.java)
                         intent.putExtra(EXTRA_DISH_DETAILS, dish)
