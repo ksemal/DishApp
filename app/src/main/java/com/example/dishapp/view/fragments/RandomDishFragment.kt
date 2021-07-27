@@ -25,7 +25,6 @@ import com.example.dishapp.viewmodel.RandomDishViewModel
 class RandomDishFragment : Fragment() {
     private var mBinding: FragmentRandomDishBinding? = null
     private var isFavorite: Boolean = false
-    private var isDishAdded: Boolean = false
     private val mFavoriteDishViewModel: DishViewModel by activityViewModels {
         DishViewModelFactory((requireActivity().application as DishApplication).repository)
     }
@@ -44,11 +43,19 @@ class RandomDishFragment : Fragment() {
         mRandomDishViewModel = ViewModelProvider(this).get(RandomDishViewModel::class.java)
         mRandomDishViewModel.getRandomRecipeFromAPI()
         randomDishViewModelObserver()
+        mBinding?.srlRandomDish?.setOnRefreshListener {
+            mRandomDishViewModel.getRandomRecipeFromAPI()
+        }
     }
 
     private fun randomDishViewModelObserver() {
         mRandomDishViewModel.randomDishResponse.observe(viewLifecycleOwner, { randomDishResponse ->
             randomDishResponse?.let {
+                mBinding?.let { binding ->
+                    if (binding.srlRandomDish.isRefreshing) {
+                        mBinding?.srlRandomDish?.isRefreshing = false
+                    }
+                }
                 setRandomDishResponseInUi(randomDishResponse.recipes[0])
             }
         })
@@ -56,6 +63,11 @@ class RandomDishFragment : Fragment() {
         mRandomDishViewModel.randomDishLoadingError.observe(viewLifecycleOwner, { dataError ->
             dataError?.let {
                 Log.e("Random dish API error", "$it")
+            }
+            mBinding?.let { binding ->
+                if (binding.srlRandomDish.isRefreshing) {
+                    mBinding?.srlRandomDish?.isRefreshing = false
+                }
             }
         })
 
@@ -112,31 +124,37 @@ class RandomDishFragment : Fragment() {
                 )
 
             binding.ivFavoriteDish.setOnClickListener {
-                isFavorite = !isFavorite
-                val randomDishDetails = Dish(
-                    recipe.image,
-                    DISH_IMAGE_SOURCE_ONLINE,
-                    recipe.title,
-                    dishType,
-                    "Other",
-                    ingredients,
-                    recipe.readyInMinutes.toString(),
-                    recipe.instructions,
-                    true
-                )
-                if (isFavorite && !isDishAdded) {
-                    mFavoriteDishViewModel.insert(randomDishDetails)
-                    isDishAdded = true
-                }
-                binding.ivFavoriteDish.setImageResource(
-                    setFavoriteDishIcon(isFavorite)
-                )
+                if (isFavorite) {
+                    Toast.makeText(
+                        requireActivity(),
+                        resources.getString(R.string.msg_already_added_to_favorites),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    isFavorite = !isFavorite
+                    val randomDishDetails = Dish(
+                        recipe.image,
+                        DISH_IMAGE_SOURCE_ONLINE,
+                        recipe.title,
+                        dishType,
+                        "Other",
+                        ingredients,
+                        recipe.readyInMinutes.toString(),
+                        recipe.instructions,
+                        true
+                    )
 
-                Toast.makeText(
-                    requireActivity(),
-                    resources.getString(R.string.msg_added_to_favorites),
-                    Toast.LENGTH_SHORT
-                ).show()
+                    mFavoriteDishViewModel.insert(randomDishDetails)
+                    binding.ivFavoriteDish.setImageResource(
+                        setFavoriteDishIcon(isFavorite)
+                    )
+
+                    Toast.makeText(
+                        requireActivity(),
+                        resources.getString(R.string.msg_added_to_favorites),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

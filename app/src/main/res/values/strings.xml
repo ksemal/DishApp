@@ -89,4 +89,5 @@
     <string name="title_select_item_to_filter">SELECT ITEM TO FILTER</string>
     <string name="other">Other</string>
     <string name="msg_added_to_favorites">You have added the dish to your favorites.</string>
+    <string name="msg_already_added_to_favorites">You have already added the dish to your favorites.</string>
 </resources>
