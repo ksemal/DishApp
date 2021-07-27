@@ -90,4 +90,5 @@
     <string name="other">Other</string>
     <string name="msg_added_to_favorites">You have added the dish to your favorites.</string>
     <string name="msg_already_added_to_favorites">You have already added the dish to your favorites.</string>
+    <string name="please_wait">Please Wait&#8230;</string>
 </resources>

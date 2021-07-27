@@ -1,5 +1,6 @@
 package com.example.dishapp.view.fragments
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -25,6 +26,7 @@ import com.example.dishapp.viewmodel.RandomDishViewModel
 class RandomDishFragment : Fragment() {
     private var mBinding: FragmentRandomDishBinding? = null
     private var isFavorite: Boolean = false
+    private var mProgressDialog: Dialog? = null
     private val mFavoriteDishViewModel: DishViewModel by activityViewModels {
         DishViewModelFactory((requireActivity().application as DishApplication).repository)
     }
@@ -74,6 +76,13 @@ class RandomDishFragment : Fragment() {
         mRandomDishViewModel.loadRandomDish.observe(viewLifecycleOwner, { loadRandomDish ->
             loadRandomDish?.let {
                 Log.i("Loading random dish", "$loadRandomDish")
+                mBinding?.let { binding ->
+                    if (loadRandomDish && !binding.srlRandomDish.isRefreshing) {
+                        showCustomProgressDialog()
+                    } else {
+                        hideProgressDialog()
+                    }
+                }
             }
         })
 
@@ -161,6 +170,20 @@ class RandomDishFragment : Fragment() {
 
     private fun setFavoriteDishIcon(isFavorite: Boolean): Int {
         return if (isFavorite) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_unselected
+    }
+
+    private fun showCustomProgressDialog() {
+        mProgressDialog = Dialog(requireActivity())
+        mProgressDialog?.let {
+            it.setContentView(R.layout.dialog_custom_progress)
+            it.show()
+        }
+    }
+
+    private fun hideProgressDialog() {
+        mProgressDialog?.let {
+            it.dismiss()
+        }
     }
 
     override fun onDestroy() {
