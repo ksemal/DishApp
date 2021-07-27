@@ -1,6 +1,7 @@
 package com.example.dishapp.view.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -43,10 +44,12 @@ class MainActivity : AppCompatActivity() {
     fun hideBottomNavigationView() {
         mBinding.navView.clearAnimation()
         mBinding.navView.animate().translationY(mBinding.navView.height.toFloat()).duration = 300
+        mBinding.navView.visibility = View.GONE
     }
 
     fun showBottomNavigationView() {
         mBinding.navView.clearAnimation()
         mBinding.navView.animate().translationY(0F).duration = 300
+        mBinding.navView.visibility = View.VISIBLE
     }
 }
