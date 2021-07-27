@@ -1,6 +1,7 @@
 package com.example.dishapp.view.fragments
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -8,17 +9,26 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dishapp.R
 import com.example.dishapp.application.DishApplication
+import com.example.dishapp.databinding.DialogCustomListBinding
 import com.example.dishapp.databinding.FragmentAllDishesBinding
 import com.example.dishapp.model.entities.Dish
+import com.example.dishapp.utils.ALL_ITEMS
+import com.example.dishapp.utils.FILTER_SELECTION
+import com.example.dishapp.utils.dishTypes
 import com.example.dishapp.view.activities.AddUpdateDishActivity
 import com.example.dishapp.view.activities.MainActivity
+import com.example.dishapp.view.adapters.CustomListItemAdapter
 import com.example.dishapp.view.adapters.DishAdapter
 import com.example.dishapp.viewmodel.DishViewModel
 import com.example.dishapp.viewmodel.DishViewModelFactory
 
 class AllDishesFragment : Fragment() {
+
+    private lateinit var mDishAdapter: DishAdapter
+    private lateinit var mCustomListDialog: Dialog
 
     private lateinit var mBinding: FragmentAllDishesBinding
 
@@ -31,15 +41,19 @@ class AllDishesFragment : Fragment() {
 
         mBinding.rvDishesList.layoutManager = GridLayoutManager(requireActivity(), 2)
 
-        val dishAdapter = DishAdapter(this)
-        mBinding.rvDishesList.adapter = dishAdapter
+        mDishAdapter = DishAdapter(this)
+        mBinding.rvDishesList.adapter = mDishAdapter
 
+        showAllDishesList()
+    }
+
+    private fun showAllDishesList() {
         mDishViewModel.allDishesList.observe(viewLifecycleOwner) { dishes ->
             dishes.let {
                 if (it.isNotEmpty()) {
                     mBinding.rvDishesList.visibility = View.VISIBLE
                     mBinding.tvNoDishesAddedYet.visibility = View.GONE
-                    dishAdapter.setDishesList(it)
+                    mDishAdapter.setDishesList(it)
                 } else {
                     mBinding.rvDishesList.visibility = View.GONE
                     mBinding.tvNoDishesAddedYet.visibility = View.VISIBLE
@@ -62,6 +76,10 @@ class AllDishesFragment : Fragment() {
         return when (item.itemId) {
             R.id.action_add_dish -> {
                 startActivity(Intent(requireActivity(), AddUpdateDishActivity::class.java))
+                true
+            }
+            R.id.action_filter_dishes -> {
+                filterDishesListDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -98,6 +116,38 @@ class AllDishesFragment : Fragment() {
             .setCancelable(false)
             .create()
             .show()
+    }
+
+    private fun filterDishesListDialog() {
+        mCustomListDialog = Dialog(requireActivity())
+        val binding: DialogCustomListBinding = DialogCustomListBinding.inflate(layoutInflater)
+        mCustomListDialog.setContentView(binding.root)
+
+        binding.tvTitle.text = resources.getString(R.string.title_select_item_to_filter)
+
+        val dishTypes = dishTypes(requireContext())
+
+        dishTypes.add(0, ALL_ITEMS)
+
+        binding.rvList.layoutManager = LinearLayoutManager(requireActivity())
+        val adapter = CustomListItemAdapter(
+            activity = requireActivity(),
+            fragment = this,
+            items = dishTypes,
+            selection = FILTER_SELECTION
+        )
+        binding.rvList.adapter = adapter
+        mCustomListDialog.show()
+    }
+
+    fun filterSelection(filterItemSelection: String) {
+        mCustomListDialog.dismiss()
+
+        if (filterItemSelection == ALL_ITEMS) {
+            showAllDishesList()
+        } else {
+
+        }
     }
 
     override fun onResume() {
