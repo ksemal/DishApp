@@ -47,7 +47,7 @@ Dish app allows you:
 
 ### Screenshots
 
-All dishes screen, filter, add to favorite
+All dishes screen, edit dish, filter, add to favorite, get random dish recipe
 
 https://user-images.githubusercontent.com/42688915/127745908-0ef212b9-9f25-4e69-a8cd-cf3cd75bd5da.mov
 
