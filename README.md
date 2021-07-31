@@ -46,3 +46,11 @@ Dish app allows you:
 * RxJava library integration
 
 ### Screenshots
+
+All dishes screen, filter, add to favorite
+
+https://user-images.githubusercontent.com/42688915/127745908-0ef212b9-9f25-4e69-a8cd-cf3cd75bd5da.mov
+
+Add new dish:
+
+https://user-images.githubusercontent.com/42688915/127745914-b7c9341e-c16f-4577-a6a9-6c0662719958.mov
