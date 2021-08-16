@@ -1,11 +1,12 @@
 package com.example.dishapp.view.fragments
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,16 +20,75 @@ import com.example.dishapp.R
 import com.example.dishapp.application.DishApplication
 import com.example.dishapp.databinding.FragmentDishDetailsBinding
 import com.example.dishapp.model.entities.Dish
+import com.example.dishapp.utils.DISH_IMAGE_SOURCE_ONLINE
 import com.example.dishapp.viewmodel.DishViewModel
 import com.example.dishapp.viewmodel.DishViewModelFactory
 import java.util.*
 
 class DishDetailsFragment : Fragment() {
 
+    private var mDishDetail: Dish? = null
+
     private val dishDetailsViewModel: DishViewModel by activityViewModels {
         DishViewModelFactory((requireActivity().application as DishApplication).repository)
     }
     private var mBinding: FragmentDishDetailsBinding? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_share, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_share_dish -> {
+                val type = "text/plain"
+                val subject = "Checkout this dish recipe"
+                var extraText = ""
+                val shareWith = "Share with"
+
+                mDishDetail?.let {
+                    var image = ""
+                    if (it.imageSource == DISH_IMAGE_SOURCE_ONLINE) {
+                        image = it.image
+                    }
+
+                    var cookingInstructions = ""
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        cookingInstructions = Html.fromHtml(
+                            it.directionsToCook,
+                            Html.FROM_HTML_MODE_COMPACT
+                        ).toString()
+                    } else {
+                        @Suppress("DEPRECATION")
+                        cookingInstructions = Html.fromHtml(it.directionsToCook).toString()
+                    }
+
+                    extraText =
+                        "$image \n" +
+                                "\n Title:  ${it.title} \n\n Type: ${it.type} \n\n Category: ${it.category}" +
+                                "\n\n Ingredients: \n ${it.ingredients} \n\n Instructions To Cook: \n $cookingInstructions" +
+                                "\n\n Time required to cook the dish approx ${it.cookingTime} minutes."
+                }
+
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = type
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+                intent.putExtra(Intent.EXTRA_TEXT, extraText)
+                startActivity(Intent.createChooser(intent, shareWith))
+
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +102,7 @@ class DishDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dishDetailsViewModel.getSelectedDish()?.let { dish ->
+            mDishDetail = dish
             mBinding?.let { binding ->
                 Glide.with(requireActivity())
                     .load(dish.image)
@@ -81,7 +142,16 @@ class DishDetailsFragment : Fragment() {
                     dish.type.capitalize(Locale.ROOT)
                 binding.tvCategory.text = dish.category
                 binding.tvIngredients.text = dish.ingredients
-                binding.tvCookingDirection.text = dish.directionsToCook
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    binding.tvCookingDirection.text = Html.fromHtml(
+                        dish.directionsToCook,
+                        Html.FROM_HTML_MODE_COMPACT
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    binding.tvCookingDirection.text =
+                        Html.fromHtml(dish.directionsToCook)
+                }
                 binding.tvCookingTime.text =
                     resources.getString(R.string.lbl_estimate_cooking_time, dish.cookingTime)
                 binding.ivFavoriteDish.setImageResource(
