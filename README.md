@@ -40,6 +40,8 @@ Dish app allows you:
 * Pallette library to extract the dominant color from images on the dish details screen
 * RecyclerView for list of dishes with item click listener interface
 * Retrofit + RxJava - HTTP client to prepare API call guerry and asynchronous fetch data from spoonacular API using observable sequences
+* Share feature for dish details screen
+* Work manager to schedule periodic app notifications
 
 ### Challenges
 
