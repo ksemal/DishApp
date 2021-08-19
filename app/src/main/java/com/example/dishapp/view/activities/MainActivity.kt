@@ -9,8 +9,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.*
 import com.example.dishapp.R
 import com.example.dishapp.databinding.ActivityMainBinding
+import com.example.dishapp.model.notification.NotifyWorker
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(mNavController, appBarConfiguration)
         mBinding.navView.setupWithNavController(mNavController)
+
+        startWork()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -51,5 +56,24 @@ class MainActivity : AppCompatActivity() {
         mBinding.navView.clearAnimation()
         mBinding.navView.animate().translationY(0F).duration = 300
         mBinding.navView.visibility = View.VISIBLE
+    }
+
+    private fun createConstraints() = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+        .setRequiresCharging(false)
+        .setRequiresBatteryNotLow(true)
+        .build()
+
+    private fun createWorkRequest() = PeriodicWorkRequestBuilder<NotifyWorker>(15, TimeUnit.MINUTES)
+        .setConstraints(createConstraints())
+        .build()
+
+    private fun startWork() {
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork(
+                "Dish Notify Work",
+                ExistingPeriodicWorkPolicy.KEEP,
+                createWorkRequest()
+            )
     }
 }
