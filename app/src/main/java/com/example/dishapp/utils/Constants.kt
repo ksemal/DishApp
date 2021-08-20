@@ -27,6 +27,10 @@ const val LIMIT_LICENSE_VALUE: Boolean = true
 const val TAGS_VALUE: String = "vegetarian,dessert"
 const val NUMBER_VALUE: Int = 1
 
+const val NOTIFICATION_ID = "Dish_notification_id"
+const val NOTIFICATION_NAME = "Dish"
+const val NOTIFICATION_CHANNEL = "Dish_channel_01"
+
 fun dishTypes(context: Context): ArrayList<String> {
     return context.resources.getStringArray(R.array.dishTypes).toCollection(ArrayList())
 }

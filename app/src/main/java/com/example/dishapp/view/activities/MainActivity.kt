@@ -1,6 +1,7 @@
 package com.example.dishapp.view.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -14,6 +15,7 @@ import com.example.dishapp.R
 import com.example.dishapp.databinding.ActivityMainBinding
 import com.example.dishapp.model.notification.NotifyWorker
 import java.util.concurrent.TimeUnit
+import com.example.dishapp.utils.NOTIFICATION_ID
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +41,12 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(mNavController, appBarConfiguration)
         mBinding.navView.setupWithNavController(mNavController)
 
+        if (intent.hasExtra(NOTIFICATION_ID)) {
+            val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
+            Log.i("Notification Id", "$notificationId")
+
+            mBinding.navView.selectedItemId = R.id.navigation_random_dish
+        }
         startWork()
     }
 
