@@ -3,7 +3,7 @@
 ### Functionality
 Dish app allows you:
 * manually add new dishes to the "all dishes" tab
-* add/edit details about each dish: photo(from gallary or camenra), title, type, category, ingredients, cooking time, directions to cook
+* add/edit details about each dish: photo(from gallery or camera), title, type, category, ingredients, cooking time, directions to cook
 * filter dishes by category
 * add dishes to favorite
 * get random dish from spoonacular API with the ability to add it to favorites
@@ -14,7 +14,7 @@ Dish app allows you:
       - Model consists of 3 packages:
             - database: room database with dao and repository to manage dishes data
             - entities: data classes to hold information about dish and random dish
-            - network: interface to make API querry to get random dish information
+            - network: interface to make API query to get random dish information
 
       - View
             - 3 activities:
@@ -39,7 +39,7 @@ Dish app allows you:
 * Room persistence library to allow for more robust database access
 * Pallette library to extract the dominant color from images on the dish details screen
 * RecyclerView for list of dishes with item click listener interface
-* Retrofit + RxJava - HTTP client to prepare API call guerry and asynchronous fetch data from spoonacular API using observable sequences
+* Retrofit + RxJava - HTTP client to prepare API call query and asynchronous fetch data from spoonacular API using observable sequences
 * Share feature for dish details screen
 * Work manager to schedule periodic app notifications
 
